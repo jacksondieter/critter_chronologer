@@ -1,8 +1,11 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Handles web requests related to Schedules.
@@ -11,28 +14,43 @@ import java.util.List;
 @RequestMapping("/schedule")
 public class ScheduleController {
 
+    @Autowired
+    ScheduleService scheduleService;
+
     @PostMapping
     public ScheduleDTO createSchedule(@RequestBody ScheduleDTO scheduleDTO) {
-        throw new UnsupportedOperationException();
+        List<Long> employeeIds = scheduleDTO.getEmployeeIds();
+        List<Long> petIds = scheduleDTO.getPetIds();
+        Schedule schedule = new Schedule();
+        BeanUtils.copyProperties(scheduleDTO, schedule,"employeeIds","petIds");
+        return scheduleToDTO(scheduleService.createSchedule(schedule,employeeIds,petIds));
     }
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
-        throw new UnsupportedOperationException();
+        return scheduleService.getAll().stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
     }
 
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
-        throw new UnsupportedOperationException();
+        return scheduleService.getScheduleForPet(petId).stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
     }
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        throw new UnsupportedOperationException();
+        return scheduleService.getScheduleForEmployees(employeeId).stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
     }
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
-        throw new UnsupportedOperationException();
+        return scheduleService.getScheduleForCustomer(customerId).stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
+    }
+
+    private ScheduleDTO scheduleToDTO(Schedule schedule) {
+        ScheduleDTO scheduleDTO = new ScheduleDTO();
+        BeanUtils.copyProperties(schedule, scheduleDTO,"employeeIds","petIds");
+        scheduleDTO.setPetIds(schedule.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList()));
+        scheduleDTO.setEmployeeIds(schedule.getEmployees().stream().map(employee -> employee.getId()).collect(Collectors.toList()));
+        return scheduleDTO;
     }
 }
