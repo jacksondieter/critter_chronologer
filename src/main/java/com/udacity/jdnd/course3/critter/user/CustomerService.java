@@ -5,6 +5,7 @@ import com.udacity.jdnd.course3.critter.pet.Pet;
 import com.udacity.jdnd.course3.critter.pet.PetService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class CustomerService extends GenericService<Customer> {
         super(repository);
     }
 
+    @Transactional
     public Customer createCustomer(Customer newCustomer, List<Long> petIds) {
         List<Pet> petList = new ArrayList<>();
         if (petIds != null) {

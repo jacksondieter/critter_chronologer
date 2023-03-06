@@ -1,16 +1,22 @@
 package com.udacity.jdnd.course3.critter.user;
 
-import com.udacity.jdnd.course3.critter.entity.Being;
 import com.udacity.jdnd.course3.critter.generic.GenericEntity;
 import com.udacity.jdnd.course3.critter.pet.Pet;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Entity
-public class Customer extends Being implements GenericEntity<Customer> {
+public class Customer implements GenericEntity<Customer> {
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="customer_id")
+    private long id;
+
+    @Nationalized
+    private String name;
+
     private String phoneNumber;
     @Nationalized
     @Column(length = 500)
@@ -20,6 +26,21 @@ public class Customer extends Being implements GenericEntity<Customer> {
             joinColumns = {@JoinColumn(name = "customer_id")},
             inverseJoinColumns = {@JoinColumn(name = "pets_id")})
     private List<Pet> pets;
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getPhoneNumber() {
         return phoneNumber;
@@ -51,10 +72,12 @@ public class Customer extends Being implements GenericEntity<Customer> {
 
     @Override
     public String toString() {
-        return super.toString() + " " +
-                "phoneNumber='" + phoneNumber + '\'' +
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", notes='" + notes + '\'' +
-                ", Pets='" + pets.stream().map(Pet::getId).collect(Collectors.toList()) + '\'' +
+                ", pets=" + pets +
                 '}';
     }
 }

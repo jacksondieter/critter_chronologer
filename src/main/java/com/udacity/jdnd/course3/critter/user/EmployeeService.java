@@ -2,6 +2,7 @@ package com.udacity.jdnd.course3.critter.user;
 
 import com.udacity.jdnd.course3.critter.generic.GenericService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -15,10 +16,10 @@ public class EmployeeService extends GenericService<Employee> {
         super(repository);
     }
 
+    @Transactional
     public void setEmployeeAvailability(Set<DayOfWeek> daysAvailable, long employeeId) {
         Employee employee = getById(employeeId);
         employee.setDaysAvailable(daysAvailable);
-        System.out.println(employee);
         update(employee);
     }
 

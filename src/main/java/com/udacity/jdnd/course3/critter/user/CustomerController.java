@@ -1,6 +1,5 @@
 package com.udacity.jdnd.course3.critter.user;
 
-import com.udacity.jdnd.course3.critter.pet.PetService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -24,22 +23,14 @@ public class CustomerController {
         List<Long> petIds = customerDTO.getPetIds();
         Customer customer = new Customer();
         BeanUtils.copyProperties(customerDTO, customer, "petIds");
-        return customerToDTO(customerService.createCustomer(customer, petIds));
+        return CustomerDTO.entityToDTO(customerService.createCustomer(customer, petIds));
     }
 
     public List<CustomerDTO> getAllCustomers() {
-        return customerService.getAll().stream().map(customer -> customerToDTO(customer)).collect(Collectors.toList());
+        return customerService.getAll().stream().map(CustomerDTO::entityToDTO).collect(Collectors.toList());
     }
 
     public CustomerDTO getOwnerByPet(@PathVariable long petId) {
-        return customerToDTO(customerService.getCustomerByPet(petId));
-    }
-
-    private CustomerDTO customerToDTO(Customer customer) {
-        CustomerDTO customerDTO = new CustomerDTO();
-        System.out.println(customer);
-        BeanUtils.copyProperties(customer, customerDTO, "petIds");
-        customerDTO.setPetIds(customer.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList()));
-        return customerDTO;
+        return CustomerDTO.entityToDTO(customerService.getCustomerByPet(petId));
     }
 }

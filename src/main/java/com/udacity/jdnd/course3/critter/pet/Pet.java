@@ -1,6 +1,5 @@
 package com.udacity.jdnd.course3.critter.pet;
 
-import com.udacity.jdnd.course3.critter.entity.Being;
 import com.udacity.jdnd.course3.critter.generic.GenericEntity;
 import com.udacity.jdnd.course3.critter.user.Customer;
 import org.hibernate.annotations.Nationalized;
@@ -9,7 +8,15 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-public class Pet extends Being implements GenericEntity<Pet> {
+public class Pet implements GenericEntity<Pet> {
+    @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="pet_id")
+    private long id;
+
+    @Nationalized
+    private String name;
+
     private PetType type;
     @ManyToOne(targetEntity = Customer.class)
     private Customer customer;
@@ -17,6 +24,22 @@ public class Pet extends Being implements GenericEntity<Pet> {
     @Nationalized
     @Column(length = 500)
     private String notes;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public PetType getType() {
         return type;
@@ -52,9 +75,11 @@ public class Pet extends Being implements GenericEntity<Pet> {
 
     @Override
     public String toString() {
-        return super.toString() + " " +
-                "type=" + type +
-                ", customer=" + customer.getId() +
+        return "Pet{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", customer=" + customer +
                 ", birthDate=" + birthDate +
                 ", notes='" + notes + '\'' +
                 '}';

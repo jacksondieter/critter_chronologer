@@ -1,10 +1,14 @@
 package com.udacity.jdnd.course3.critter.schedule;
 
+import com.udacity.jdnd.course3.critter.pet.Pet;
+import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeSkill;
+import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Represents the form that schedule request and response data takes. Does not map
@@ -55,5 +59,12 @@ public class ScheduleDTO {
 
     public void setActivities(Set<EmployeeSkill> activities) {
         this.activities = activities;
+    }
+    public static ScheduleDTO entityToDTO(Schedule schedule) {
+        ScheduleDTO scheduleDTO = new ScheduleDTO();
+        BeanUtils.copyProperties(schedule, scheduleDTO,"employeeIds","petIds");
+        scheduleDTO.setPetIds(schedule.getPets().stream().map(Pet::getId).collect(Collectors.toList()));
+        scheduleDTO.setEmployeeIds(schedule.getEmployees().stream().map(Employee::getId).collect(Collectors.toList()));
+        return scheduleDTO;
     }
 }

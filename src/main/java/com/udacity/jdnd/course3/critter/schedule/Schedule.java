@@ -14,7 +14,8 @@ import java.util.Set;
 @Entity
 public class Schedule implements GenericEntity<Schedule> {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Column(name="schedule_id")
     private long id;
 
     @ManyToMany(targetEntity = Employee.class)

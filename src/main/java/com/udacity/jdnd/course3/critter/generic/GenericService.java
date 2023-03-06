@@ -1,11 +1,9 @@
 package com.udacity.jdnd.course3.critter.generic;
 
-import com.udacity.jdnd.course3.critter.pet.Pet;
 import org.springframework.beans.BeanUtils;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 public abstract class GenericService<T extends GenericEntity<T>> {
 
@@ -24,14 +22,14 @@ public abstract class GenericService<T extends GenericEntity<T>> {
     }
 
     public T getById(Long id){
-        return repository.findById(id).orElseThrow(UnsupportedOperationException::new);
+        return repository.findById(id).orElseThrow(ElementNotFoundException::new);
     }
 
     @Transactional
-    public T update(T updated){
+    public void update(T updated){
         T dbDomain = getById(updated.getId());
         BeanUtils.copyProperties(updated, dbDomain);
-        return repository.save(dbDomain);
+        repository.save(dbDomain);
     }
 
     @Transactional

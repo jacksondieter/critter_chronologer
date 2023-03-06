@@ -25,15 +25,15 @@ public class EmployeeController {
     public EmployeeDTO saveEmployee(@RequestBody EmployeeDTO employeeDTO) {
         Employee employee = new Employee();
         BeanUtils.copyProperties(employeeDTO, employee);
-        return employeeToDTO(employeeService.create(employee));
+        return EmployeeDTO.entityToDTO(employeeService.create(employee));
     }
 
     public List<EmployeeDTO> getAllEmployees() {
-        return employeeService.getAll().stream().map(employee -> employeeToDTO(employee)).collect(Collectors.toList());
+        return employeeService.getAll().stream().map(EmployeeDTO::entityToDTO).collect(Collectors.toList());
     }
 
     public EmployeeDTO getEmployee(@PathVariable long employeeId) {
-        return employeeToDTO(employeeService.getById(employeeId));
+        return EmployeeDTO.entityToDTO(employeeService.getById(employeeId));
     }
 
     public void setAvailability(@RequestBody Set<DayOfWeek> daysAvailable, @PathVariable long employeeId) {
@@ -41,12 +41,6 @@ public class EmployeeController {
     }
 
     public List<EmployeeDTO> findEmployeesForService(@RequestBody EmployeeRequestDTO employeeDTO) {
-        return employeeService.findEmployeesForService(employeeDTO.getDate(), employeeDTO.getSkills()).stream().map(employee -> employeeToDTO(employee)).collect(Collectors.toList());
-    }
-
-    private EmployeeDTO employeeToDTO(Employee employee) {
-        EmployeeDTO employeeDTO = new EmployeeDTO();
-        BeanUtils.copyProperties(employee, employeeDTO);
-        return employeeDTO;
+        return employeeService.findEmployeesForService(employeeDTO.getDate(), employeeDTO.getSkills()).stream().map(EmployeeDTO::entityToDTO).collect(Collectors.toList());
     }
 }

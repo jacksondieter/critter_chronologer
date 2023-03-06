@@ -7,6 +7,7 @@ import com.udacity.jdnd.course3.critter.user.Employee;
 import com.udacity.jdnd.course3.critter.user.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
@@ -25,6 +26,7 @@ public class ScheduleService extends GenericService<Schedule> {
         super(repository);
     }
 
+    @Transactional
     public Schedule createSchedule(Schedule schedule, List<Long> employeeIds, List<Long> petIds) {
         List<Employee> employeeList = employeeIds.stream().map(employeeId-> employeeService.getById(employeeId)).collect(Collectors.toList());
         List<Pet> petList = petIds.stream().map(petId-> petService.getById(petId)).collect(Collectors.toList());
@@ -48,6 +50,6 @@ public class ScheduleService extends GenericService<Schedule> {
     public List<Schedule> getScheduleForCustomer(long customerId){
         ScheduleRepository scheduleRepository = (ScheduleRepository) getRepository();
         System.out.println(customerId);
-        return petService.getPetsByOwner(customerId).stream().map(pet -> scheduleRepository.getAllByPetsContaining(pet)).flatMap(Collection::stream).collect(Collectors.toList());
+        return petService.getPetsByOwner(customerId).stream().map(scheduleRepository::getAllByPetsContaining).flatMap(Collection::stream).collect(Collectors.toList());
     }
 }

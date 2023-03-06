@@ -21,28 +21,21 @@ public class PetController {
         Long ownerId = petDTO.getOwnerId();
         Pet pet = new Pet();
         BeanUtils.copyProperties(petDTO,pet,"ownerId");
-        return petToDTO(petService.createPet(pet, ownerId));
+        return PetDTO.entityToDTO(petService.createPet(pet, ownerId));
     }
 
     @GetMapping("/{petId}")
     public PetDTO getPet(@PathVariable long petId) {
-        return petToDTO(petService.getById(petId));
+        return PetDTO.entityToDTO(petService.getById(petId));
     }
 
     @GetMapping
     public List<PetDTO> getPets() {
-        return petService.getAll().stream().map(pet -> petToDTO(pet)).collect(Collectors.toList());
+        return petService.getAll().stream().map(PetDTO::entityToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/owner/{ownerId}")
     public List<PetDTO> getPetsByOwner(@PathVariable long ownerId) {
-       return petService.getPetsByOwner(ownerId).stream().map(pet -> petToDTO(pet)).collect(Collectors.toList());
-    }
-
-    private  PetDTO petToDTO(Pet pet) {
-        PetDTO petDTO = new PetDTO();
-        BeanUtils.copyProperties(pet,petDTO, "customer");
-        petDTO.setOwnerId(pet.getCustomer().getId());
-        return petDTO;
+       return petService.getPetsByOwner(ownerId).stream().map(PetDTO::entityToDTO).collect(Collectors.toList());
     }
 }

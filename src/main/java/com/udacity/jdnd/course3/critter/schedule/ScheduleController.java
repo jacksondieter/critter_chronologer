@@ -23,34 +23,26 @@ public class ScheduleController {
         List<Long> petIds = scheduleDTO.getPetIds();
         Schedule schedule = new Schedule();
         BeanUtils.copyProperties(scheduleDTO, schedule,"employeeIds","petIds");
-        return scheduleToDTO(scheduleService.createSchedule(schedule,employeeIds,petIds));
+        return ScheduleDTO.entityToDTO(scheduleService.createSchedule(schedule,employeeIds,petIds));
     }
 
     @GetMapping
     public List<ScheduleDTO> getAllSchedules() {
-        return scheduleService.getAll().stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
+        return scheduleService.getAll().stream().map(ScheduleDTO::entityToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/pet/{petId}")
     public List<ScheduleDTO> getScheduleForPet(@PathVariable long petId) {
-        return scheduleService.getScheduleForPet(petId).stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
+        return scheduleService.getScheduleForPet(petId).stream().map(ScheduleDTO::entityToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/employee/{employeeId}")
     public List<ScheduleDTO> getScheduleForEmployee(@PathVariable long employeeId) {
-        return scheduleService.getScheduleForEmployees(employeeId).stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
+        return scheduleService.getScheduleForEmployees(employeeId).stream().map(ScheduleDTO::entityToDTO).collect(Collectors.toList());
     }
 
     @GetMapping("/customer/{customerId}")
     public List<ScheduleDTO> getScheduleForCustomer(@PathVariable long customerId) {
-        return scheduleService.getScheduleForCustomer(customerId).stream().map(schedule -> scheduleToDTO(schedule)).collect(Collectors.toList());
-    }
-
-    private ScheduleDTO scheduleToDTO(Schedule schedule) {
-        ScheduleDTO scheduleDTO = new ScheduleDTO();
-        BeanUtils.copyProperties(schedule, scheduleDTO,"employeeIds","petIds");
-        scheduleDTO.setPetIds(schedule.getPets().stream().map(pet -> pet.getId()).collect(Collectors.toList()));
-        scheduleDTO.setEmployeeIds(schedule.getEmployees().stream().map(employee -> employee.getId()).collect(Collectors.toList()));
-        return scheduleDTO;
+        return scheduleService.getScheduleForCustomer(customerId).stream().map(ScheduleDTO::entityToDTO).collect(Collectors.toList());
     }
 }

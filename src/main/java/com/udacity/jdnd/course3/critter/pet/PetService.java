@@ -2,10 +2,10 @@ package com.udacity.jdnd.course3.critter.pet;
 
 import com.udacity.jdnd.course3.critter.generic.GenericService;
 import com.udacity.jdnd.course3.critter.user.Customer;
-import com.udacity.jdnd.course3.critter.user.CustomerRepository;
 import com.udacity.jdnd.course3.critter.user.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,6 +18,7 @@ public class PetService extends GenericService<Pet> {
         super(repository);
     }
 
+    @Transactional
     public Pet createPet(Pet newPet, Long ownerId) {
         Customer customer = customerService.getById(ownerId);
         newPet.setCustomer(customer);
